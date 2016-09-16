@@ -13,8 +13,6 @@ ENV BACKEND_FOLDER /root/contentools/backend
 ENV FRONTEND_FOLDER /root/contentools/frontend
 
 ENV SSH_DIR /root/.ssh/
-#ENV BACKEND_KEY ${SSH_DIR}docker-backend
-#ENV FRONTEND_KEY ${SSH_DIR}docker-frontend
 
 # Install Packages
 RUN \	
@@ -57,16 +55,30 @@ RUN chmod 600 ${SSH_DIR}id_rsa && \
 	git clone git@github.com:contentools/backend.git ${BACKEND_FOLDER} && \
 	cd ${BACKEND_FOLDER} && \
 	git checkout dev
-#	echo "IdentityFile ${BACKEND_KEY}" >> /etc/ssh/ssh_config && \
+
+# Instal nodejs
+RUN \
+	apt-get install -y nodejs nodejs-legacy npm build-essential
 
 # Fetch and build frontend repository into contentool dir
 ADD docker-frontend ${SSH_DIR}id_rsa
-RUN chmod 600 ${SSH_DIR}id_rsa && \
-	git clone git@github.com:contentools/frontend.git ${FRONTEND_FOLDER}
+RUN \
+	chmod 600 ${SSH_DIR}id_rsa && \
+	git clone git@github.com:contentools/frontend.git ${FRONTEND_FOLDER} && \
 	cd ${FRONTEND_FOLDER} && \
-	git checkout dev && \
+	git checkout dev 
+
+# Build the frontend
+RUN \
+	cd ${FRONTEND_FOLDER} && \
+	rm -rf node_modules/ && \
+	rm -rf ~/.npm && \
+	npm install -g bower && \
+	npm install -g grunt-wiredep && \
+	bower install --allow-root && \
+	npm cache clean && \
+#   npm install && \
 	make build
-#	echo "IdentityFile ${FRONTEND_KEY}" >> /etc/ssh/ssh_config
 	
 # Create symlinks
 RUN \
@@ -75,30 +87,52 @@ RUN \
 	cd /opt && \
 	ln -s ${BACKEND_FOLDER} contentools
 
-# Install autoenv
-RUN	pip install autoenv
-COPY .env ${BACKEND_FOLDER}
-RUN	autoenv
-
 # Contentools create database
 COPY start_postgres.sh /root/start_postgres.sh
 CMD ["/root/start_postgres.sh"]
 
 # Nginx
 RUN \
-	rm -f /etc/nginx/nginx.conf \
-	ln -s ${BACKEND_FOLDER}/conf/nginx.dev.conf /etc/nginx/nginx.conf \
+	rm -f /etc/nginx/nginx.conf && \
+	ln -s ${BACKEND_FOLDER}/conf/nginx.dev.conf /etc/nginx/nginx.conf && \
 	service nginx restart
-
 
 # Virtual env e run platform
 RUN \
 	cd ${BACKEND_FOLDER} && \
+	cp .env.example .env
+
+RUN \
+	virtualenv venv --python=python3
+
+# Install foreman
+RUN \
+	apt-get -y install ca-certificates wget && \
+	wget https://apt.puppetlabs.com/puppetlabs-release-trusty.deb && \
+	dpkg -i puppetlabs-release-trusty.deb
+
+RUN \ 
+	echo "deb http://deb.theforeman.org/ trusty 1.9" > /etc/apt/sources.list.d/foreman.list && \
+	echo "deb http://deb.theforeman.org/ plugins 1.9" >> /etc/apt/sources.list.d/foreman.list && \
+	wget -q http://deb.theforeman.org/pubkey.gpg -O- | apt-key add -
+
+RUN \
+	apt-get update && \
+	apt-get -y install foreman-installer && \
+	foreman-installer
+
+# Install requirements and run plataform
+RUN \
 	source venv/bin/activate && \
 	source .env && \
+	export DATABASE_URL=postgres://contentools_dev:12345@localhost:5432/contentools && \
 	pip install -r requirements.txt && \
-	python manage.py migrate_schemas --shared &&
-	./restore_schemas.sh && \
-	foreman start
+	python manage.py migrate_schemas --shared && \
+	yes | ./restore_schemas.sh contentools && \
+	nohup foreman start > /var/log/contentools_docker.log 2>&1 &
 
 EXPOSE 5000
+
+# is not recommended as it persists in the final image
+# but this avoid TERM error during build
+# ENV DEBIAN_FRONTEND noninteractive
