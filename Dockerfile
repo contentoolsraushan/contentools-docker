@@ -34,6 +34,7 @@ RUN \
 		curl \
 		nginx \
 		libpq-dev \
+		python3 \
 		python3-dev \
 		python-virtualenv \
 		rabbitmq-server \
@@ -43,7 +44,7 @@ RUN \
         build-essential
 
 RUN apt-get install -y phantomjs
-ENV PHANTOMJS_BIN /usr/local/bin/phantomjs
+ENV PHANTOMJS_BIN /usr/bin/phantomjs
 
 RUN gem install foreman
 
@@ -100,12 +101,33 @@ RUN \
     git pull --rebase
 
 
+# Build the backend
+RUN \
+	cd ${BACKEND_FOLDER} && \
+	cp .env.example .env
+
+RUN \
+	cd ${BACKEND_FOLDER} && \
+	export $DATABASE_URL
+
+RUN \
+	cd ${BACKEND_FOLDER} && \
+	virtualenv venv --python=python3 && \
+    source venv/bin/activate && \
+    source .env && \
+    make build && \
+    make test
+
+
 # Build the frontend
 RUN \
 	cd ${FRONTEND_FOLDER} && \
 	make build
 
-RUN make test
+RUN \
+	cd ${FRONTEND_FOLDER} && \
+	export PHANTOMJS_BIN=/usr/bin/phantomjs && \
+	make test
 	
 # Create symlinks
 RUN \
@@ -124,18 +146,6 @@ RUN \
 	ln -s ${BACKEND_FOLDER}/conf/nginx.dev.conf /etc/nginx/nginx.conf && \
 	service nginx restart
 
-# Virtual env e run platform
-RUN \
-	cd ${BACKEND_FOLDER} && \
-	cp .env.example .env
-
-RUN \
-	virtualenv venv --python=python3 && \
-    source venv/bin/activate && \
-    source .env && \
-    make build && \
-    make test
-
 # Install requirements and run plataform
 #RUN \
 #	source venv/bin/activate && \
@@ -147,7 +157,3 @@ RUN \
 #	nohup foreman start > /var/log/contentools_docker.log 2>&1 &
 
 EXPOSE 5000
-
-# is not recommended as it persists in the final image
-# but this avoid TERM error during build
-# ENV DEBIAN_FRONTEND noninteractive
