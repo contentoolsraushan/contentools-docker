@@ -118,7 +118,8 @@ RUN \
 # Build the frontend
 RUN \
 	cd ${FRONTEND_FOLDER} && \
-	make build && \
+	make build
+
 RUN make test
 	
 # Create symlinks
