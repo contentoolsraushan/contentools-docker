@@ -45,21 +45,6 @@ RUN \
 RUN apt-get install -y phantomjs
 ENV PHANTOMJS_BIN /usr/local/bin/phantomjs
 
-#install phantomjs
-RUN apt-get install  -y \
-libfreetype6 libfreetype6-dev \
-libfontconfig1 libfontconfig1-dev \
-chrpath libssl-dev libxft-dev \
-wget
-
-RUN cd ~  && \
-export PHANTOM_JS="phantomjs-1.9.8-linux-x86_64" && \
-wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2 && \
-tar xvjf $PHANTOM_JS.tar.bz2 && \
-mv $PHANTOM_JS /usr/local/share && \
-ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin && \ 
-rm $PHANTOM_JS.tar.bz2
-
 RUN gem install foreman
 
 # Replace shell with bash so we can source files
