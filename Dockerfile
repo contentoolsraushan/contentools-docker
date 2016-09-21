@@ -104,17 +104,13 @@ RUN \
 # Build the backend
 RUN \
 	cd ${BACKEND_FOLDER} && \
-	cp .env.example .env
-
-RUN \
-	cd ${BACKEND_FOLDER} && \
-	export $DATABASE_URL
+	cp .env.example .env && \
+    source ${BACKEND_FOLDER}/.env
 
 RUN \
 	cd ${BACKEND_FOLDER} && \
 	virtualenv venv --python=python3 && \
     source venv/bin/activate && \
-    source .env && \
     make build && \
     make test
 
