@@ -15,6 +15,9 @@ ENV FRONTEND_FOLDER /root/contentools/frontend
 ENV SSH_DIR /root/.ssh/
 
 
+ENV FRONTEND_GIT_URL git@gitlab.com:contentools/frontend.git
+ENV BACKEND_GIT_URL git@gitlab.com:contentools/backend.git
+
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 5.11.1
 
@@ -79,22 +82,23 @@ RUN mkdir ${SSH_DIR}
 
 # Create known_hosts
 RUN touch /root/.ssh/known_hosts
-# Add github to known hosts
-RUN ssh-keyscan -T 30 github.com >> /root/.ssh/known_hosts
+# Add gitlab to known hosts
+RUN ssh-keyscan -T 30 gitlab.com >> /root/.ssh/known_hosts
 
 # Fetch backend repository into contentool dir
 ADD docker-backend ${SSH_DIR}id_rsa
-RUN chmod 600 ${SSH_DIR}id_rsa && \
-	git clone git@github.com:contentools/backend.git ${BACKEND_FOLDER} && \
+
+RUN chmod 600 ${SSH_DIR}id_rsa
+
+RUN \
+	git clone ${BACKEND_GIT_URL} ${BACKEND_FOLDER} && \
 	cd ${BACKEND_FOLDER} && \
 	git checkout dev && \
     git pull --rebase
 
 # Fetch and build frontend repository into contentool dir
-ADD docker-frontend ${SSH_DIR}id_rsa
 RUN \
-	chmod 600 ${SSH_DIR}id_rsa && \
-	git clone git@github.com:contentools/frontend.git ${FRONTEND_FOLDER} && \
+	git clone ${FRONTEND_GIT_URL} ${FRONTEND_FOLDER} && \
 	cd ${FRONTEND_FOLDER} && \
 	git checkout dev && \
     git pull --rebase
