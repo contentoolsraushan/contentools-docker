@@ -16,7 +16,7 @@ ENV SSH_DIR /root/.ssh/
 
 
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 4.2.4
+ENV NODE_VERSION 5.11.1
 
 #config to allow bower run as root
 RUN echo '{ "allow_root": true }' > /root/.bowerrc
@@ -28,9 +28,7 @@ RUN echo '{ "allow_root": true }' > /root/.bowerrc
 RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 
 # Install Packages
-RUN apt-get update
-RUN \
-	apt-get install -y \
+RUN apt-get update && apt-get install -y \
 		curl \
 		nginx \
 		libpq-dev \
@@ -52,7 +50,7 @@ RUN gem install foreman
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.30.1/install.sh | bash \
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | bash \
 && source $NVM_DIR/nvm.sh \
 && nvm install $NODE_VERSION \
 && nvm alias default $NODE_VERSION \
@@ -112,8 +110,8 @@ RUN \
 	cd ${BACKEND_FOLDER} && \
 	virtualenv venv --python=python3 && \
     source venv/bin/activate && \
-    make build && \
-    make test
+    make build
+    #make test
 
 
 # Build the frontend
