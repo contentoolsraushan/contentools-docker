@@ -41,7 +41,8 @@ RUN \
 		git-core \
         libncurses5-dev \
         ruby-full \
-        build-essential
+        build-essential \
+        gettext
 
 RUN apt-get install -y phantomjs
 ENV PHANTOMJS_BIN /usr/bin/phantomjs
