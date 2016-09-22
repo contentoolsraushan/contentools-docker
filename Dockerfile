@@ -120,14 +120,14 @@ RUN \
 	cd /opt && \
 	ln -s ${BACKEND_FOLDER} contentools
 
-ADD backup/ /opt/contentools/tmp
+ADD backup/ /opt/backup
+ADD scripts/ /opt/scripts
 
-# Install requirements and run plataform
+#RESTORE DATABASE
 #RUN \
 #	cd ${BACKEND_FOLDER} && \
-#	source venv/bin/activate && \
 #    export PRODUCTION_DB_URL=postgres://contentools:content1550@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools && \
-#    export DATABASE_URL=postgres://postgres@localhost:5433/contentools && \
+#    export DATABASE_URL=postgres://postgres@postgres:5433 && \
 #	yes | ./restore-schema.sh contentools
 
 COPY entrypoint.sh /
