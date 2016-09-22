@@ -1,7 +1,7 @@
 PORT=6660
 FRONTEND_DIR=../frontend
 BASE_DOMAIN=contentools.dev
-DATABASE_URL=postgres://postgres@localhost:5432/contentools
+DATABASE_URL=postgres://postgres@localhost:5433/contentools
 PRODUCTION_DB_URL=postgres://contentools:content1549@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools
 
 TWITTER_CONSUMER_SECRET=406HqruGsiulhOyZ9fAkV1Abo1EfshX9Ln2lMMR1jn2GyMt3Hr

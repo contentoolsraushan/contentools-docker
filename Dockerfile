@@ -123,13 +123,14 @@ RUN \
 ADD backup/ /opt/contentools/tmp
 
 # Install requirements and run plataform
-RUN \
-	cd ${BACKEND_FOLDER} && \
-	source venv/bin/activate && \
-    export PRODUCTION_DB_URL=postgres://contentools:content1550@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools && \
-    export DATABASE_URL=postgres://postgres@localhost:5433/contentools && \
-	yes | ./restore-schema.sh contentools
+#RUN \
+#	cd ${BACKEND_FOLDER} && \
+#	source venv/bin/activate && \
+#    export PRODUCTION_DB_URL=postgres://contentools:content1550@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools && \
+#    export DATABASE_URL=postgres://postgres@localhost:5433/contentools && \
+#	yes | ./restore-schema.sh contentools
 
-ENTRYPOINT ["nohup foreman start > /var/log/contentools_docker.log 2>&1 &"]
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 5000

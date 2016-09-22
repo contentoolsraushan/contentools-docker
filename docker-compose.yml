@@ -7,8 +7,8 @@ services:
     ports:
      - "5000:5000"
     volumes:
-     - ./code/:/root/contentools/
-     - /opt/contentools/
+        #     - ./code/:/root/contentools/
+    - /opt/contentools/
     depends_on:
      - postgres
   postgres:
