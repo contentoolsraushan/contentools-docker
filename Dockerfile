@@ -114,11 +114,11 @@ RUN \
 #   make test
 	
 # Create symlinks
-RUN \
-	cd ${BACKEND_FOLDER} && \
-	ln -s ${FRONTEND_FOLDER} && \
-	cd /opt && \
-	ln -s ${BACKEND_FOLDER} contentools
+#RUN \
+#	cd ${BACKEND_FOLDER} && \
+#	ln -s ${FRONTEND_FOLDER} && \
+#	cd /opt && \
+#	ln -s ${BACKEND_FOLDER} contentools
 
 ADD backup/ /opt/backup
 ADD scripts/ /opt/scripts
