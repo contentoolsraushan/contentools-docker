@@ -1,0 +1,28 @@
+export PORT=6660
+export FRONTEND_DIR=../frontend
+export BASE_DOMAIN=contentools.dev
+#export DATABASE_URL=postgres://contentools:content1549@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools
+export DATABASE_URL=postgres://postgres@localhost:5432/contentools
+#export DATABASE_URL=postgres://contentools:content1549@contentools-staging.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools
+export PRODUCTION_DB_URL=postgres://contentools:content1549@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools
+
+export TWITTER_CONSUMER_SECRET=406HqruGsiulhOyZ9fAkV1Abo1EfshX9Ln2lMMR1jn2GyMt3Hr
+export TWITTER_CONSUMER_TOKEN=97CvojCUq5VgmeZaKBwZHj8Xp
+export TWITTER_CALLBACK=http://contentools.dev:5000/api/v1/social_callback/
+
+export GOOGLEPLUS_CONSUMER_TOKEN=139872560164-l9gvj0u06novcpupcihn66iq90pa7796.apps.googleusercontent.com
+export GOOGLEPLUS_CONSUMER_SECRET=0u_x9epJZoT3Lq2Y3VCr7csQ
+
+export LINKEDIN_APP_ID=75ffbpca4bvr20
+export LINKEDIN_APP_SECRET=ygWuwpogNBg1xaDW
+export LINKEDIN_REDIRECT_URI=http://contentools.dev:5000/api/v1/social_callback/?type=linkedin
+
+export FACEBOOK_APP_ID=984966154853625
+export FACEBOOK_APP_SECRET=c5c5834923f4a1592bc5163c2d209fb8
+export FACEBOOK_REDIRECT_URI=http://contentools.dev:5000/api/v1/social_callback/?type=facebook
+
+export STRIPE_KEY=sk_test_LrVLacoec6d1ywVjhVCQPmi5
+#export MIXPANEL_KEY=ef319adacd547caefed6a4f7c1b7290d
+
+export LOG_LEVEL_CONSOLE=INFO
+export LOG_LEVEL=INFO

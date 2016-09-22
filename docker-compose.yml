@@ -1,0 +1,25 @@
+version: '2'
+services:
+  web:
+    build: .
+    env_file:
+    - env
+    ports:
+     - "5000:5000"
+    volumes:
+     - /root/contentools/volume
+    depends_on:
+     - postgres
+  postgres:
+    image: postgres:9.4
+    ports:
+     - "5433:5432"
+  nginx:
+    image: nginx:1.10
+    ports:
+     - "8080:80"
+    volumes_from:
+     - web
+    volumes:
+     - /home/lucas/contentools/backend/conf/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+     - /etc/nginx/ssl/:/etc/nginx/ssl/
