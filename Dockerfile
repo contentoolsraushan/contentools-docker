@@ -14,6 +14,7 @@ ENV FRONTEND_FOLDER /root/contentools/frontend
 
 ENV SSH_DIR /root/.ssh/
 
+ENV PROUDCTION_DB_URL a
 
 ENV FRONTEND_GIT_URL git@gitlab.com:contentools/frontend.git
 ENV BACKEND_GIT_URL git@gitlab.com:contentools/backend.git
@@ -33,7 +34,6 @@ RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 # Install Packages
 RUN apt-get update && apt-get install -y \
 		curl \
-		nginx \
 		libpq-dev \
 		python3 \
 		python3-dev \
@@ -43,9 +43,10 @@ RUN apt-get update && apt-get install -y \
         libncurses5-dev \
         ruby-full \
         build-essential \
-        gettext
+        gettext \
+        phantomjs \
+        postgresql-client
 
-RUN apt-get install -y phantomjs
 ENV PHANTOMJS_BIN /usr/bin/phantomjs
 
 RUN gem install foreman
@@ -62,21 +63,6 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | b
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-#RUN \
-#	echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" \
-#       > /etc/apt/sources.list.d/pgdg.list && \
-#  	curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-#       | apt-key add - && \
-#	apt-get update && \
-#	apt-get install -y \
-#		postgresql-${PG_VERSION} \
-#		postgresql-contrib-${PG_VERSION}
-
-# Create contentools dir
-#RUN cd ~/ && \
-#	mkdir contentools && \
-
-
 # Make ssh dir
 RUN mkdir ${SSH_DIR}
 
@@ -91,18 +77,17 @@ ADD docker-backend ${SSH_DIR}id_rsa
 RUN chmod 600 ${SSH_DIR}id_rsa
 
 RUN \
-	git clone ${BACKEND_GIT_URL} ${BACKEND_FOLDER} && \
+    git clone ${BACKEND_GIT_URL} ${BACKEND_FOLDER} && \
 	cd ${BACKEND_FOLDER} && \
 	git checkout dev && \
     git pull --rebase
 
 # Fetch and build frontend repository into contentool dir
 RUN \
-	git clone ${FRONTEND_GIT_URL} ${FRONTEND_FOLDER} && \
+    git clone ${FRONTEND_GIT_URL} ${FRONTEND_FOLDER} && \
 	cd ${FRONTEND_FOLDER} && \
 	git checkout dev && \
     git pull --rebase
-
 
 # Build the backend
 RUN \
@@ -123,10 +108,10 @@ RUN \
 	cd ${FRONTEND_FOLDER} && \
 	make build
 
-RUN \
-	cd ${FRONTEND_FOLDER} && \
-	export PHANTOMJS_BIN=/usr/bin/phantomjs && \
-	make test
+#RUN \
+#	cd ${FRONTEND_FOLDER} && \
+#	export PHANTOMJS_BIN=/usr/bin/phantomjs
+#   make test
 	
 # Create symlinks
 RUN \
@@ -135,24 +120,16 @@ RUN \
 	cd /opt && \
 	ln -s ${BACKEND_FOLDER} contentools
 
-# Contentools create database
-#COPY start_postgres.sh /root/start_postgres.sh
-#CMD ["/root/start_postgres.sh"]
-
-# Nginx
-RUN \
-	rm -f /etc/nginx/nginx.conf && \
-	ln -s ${BACKEND_FOLDER}/conf/nginx.dev.conf /etc/nginx/nginx.conf && \
-	service nginx restart
+ADD backup/ /opt/contentools/tmp
 
 # Install requirements and run plataform
-#RUN \
-#	source venv/bin/activate && \
-#	source .env && \
-#	export DATABASE_URL=postgres://contentools_dev:12345@localhost:5432/contentools && \
-#	pip install -r requirements.txt && \
-#	python manage.py migrate_schemas --shared && \
-#	yes | ./restore_schemas.sh contentools && \
-#	nohup foreman start > /var/log/contentools_docker.log 2>&1 &
+RUN \
+	cd ${BACKEND_FOLDER} && \
+	source venv/bin/activate && \
+    export PRODUCTION_DB_URL=postgres://contentools:content1550@contentools-saas.ceajwush8ru3.us-west-1.rds.amazonaws.com:5432/contentools && \
+    export DATABASE_URL=postgres://postgres@localhost:5433/contentools && \
+	yes | ./restore-schema.sh contentools
+
+ENTRYPOINT ["nohup foreman start > /var/log/contentools_docker.log 2>&1 &"]
 
 EXPOSE 5000
