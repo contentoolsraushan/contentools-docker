@@ -69,4 +69,7 @@ $ docker-compose run --rm backend restore
 
 ## Roadmap/Improvements
 
+* Logs: Currently all the containers output their stuff to STDOUT. We should make nginx, postgresql and rabbitmq
+output their stuff in log files under a `logs/` folder.
+
 (todo)
