@@ -6,14 +6,8 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 5.11.1
-
-#config to allow bower run as root
-RUN echo '{ "allow_root": true }' > /root/.bowerrc
-
 # Let the conatiner know that there is no tty
-#ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 
 # Install Packages
 RUN apt-get update && apt-get install -y \

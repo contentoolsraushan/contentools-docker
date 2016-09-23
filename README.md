@@ -68,11 +68,21 @@ Our composition is made of the following containers:
 
 ### frontend
 
-(todo)
+This custom container has basically npm and bower installed, allowing us
+to run all the commands that are in the frontend [Makefile](https://gitlab.com/contentools/frontend/blob/master/Makefile).
+
+The most important commands are `build`, `test` and `watch`.
 
 ### backend
 
-(todo)
+This container is set up to run our backend, which is a Django application.
+Through the [Makefile](https://gitlab.com/contentools/backend/blob/master/Makefile) from the backend project,
+it is possible to:
+
+* `serve`: fire up the server (with auto-reload);
+* `restore`: restore the database for development;
+
+And any other command from the Makefile, like `build` and `test`
 
 ### postgres
 
