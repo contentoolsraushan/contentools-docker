@@ -59,17 +59,47 @@ $ docker-compose run --rm backend restore
  docker-compose up
 ```
 
+
+## Containers
+
+Our composition is made of the following containers:
+
+### frontend
+
+(todo)
+
+### backend
+
+(todo)
+
+### postgres
+
+This is the [official postgres container](https://hub.docker.com/_/postgres/)
+(todo)
+
+### nginx
+
+This is the [official nginx container](https://hub.docker.com/_/nginx/)
+(todo)
+
+### rabbitmq
+
+This the [official nginx container](https://hub.docker.com/_/rabbitmq/)
 (todo)
 
 ## Known Issues
 
 * Docker does not handle well SIGINT (ctrl+c) signals, so it is pretty hard to stop/interrupt running tasks
 
-(todo)
-
-## Roadmap/Improvements
+## TODO/Roadmap/Improvements
 
 * Logs: Currently all the containers output their stuff to STDOUT. We should make nginx, postgresql and rabbitmq
 output their stuff in log files under a `logs/` folder.
-
-(todo)
+* Worker: Make a container to run the main worker (celery):
+`python manage.py celery -A contentools -l info worker --concurrency=1 -Ofair --statedb=%n.state`
+* Cron: Make a container to run the cron worker (celery):
+`celery -A contentools beat`
+* Use a configuration file for gunicorn instead running it with lots of arguments
+* Refactor restore_db.sh (backend project) to use env variables instead hardcoded address/user
+* It would be a good idea to use non-standard ports to avoid conflicts with services already running into the
+host machine
