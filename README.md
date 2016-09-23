@@ -1,3 +1,5 @@
+# ![pageres](media/logo.png)
+
 Virtualized environment to run the Contentools stack using docker and docker-compose.
 With this project, you don't need to install anything from our stack to have it running.
 
