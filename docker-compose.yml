@@ -20,7 +20,6 @@ services:
         - ./code/backend/:/opt/backend/
     depends_on:
      - postgres
-     - rabbitmq
   postgres:
     image: postgres:9.4
     ports:
