@@ -1,3 +1,11 @@
+Virtualized environment to run the Contentools stack using docker and docker-compose. With this project, you don't need to install anything from our stack to have it running.
+
+## Pre-requisites
+
+To run the containers, you need:
+* [Docker](https://docs.docker.com/engine/installation/) (1.21.1 or higher)
+* [Docker Compose](https://docs.docker.com/compose/install/) (1.8 or higher)
+
 ## Install
 
 Clone the backend and the frontend repository to the code folder:
@@ -21,3 +29,13 @@ $ docker run --rm -v $(pwd)/code/frontend:/opt/backend/ contentools/backend-cont
 *$(pwd) is used because docker do not accept relative directories. Use the absolute path instead $(pwd) in non-UNIX environments.*
 
 ## Firing up the stack
+
+(todo)
+
+## Known Issues
+
+(todo)
+
+## Roadmap/Improvements
+
+(todo)
