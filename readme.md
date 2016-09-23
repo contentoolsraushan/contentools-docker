@@ -1,35 +1,23 @@
-Requirements
+## Install
 
-Docker
-Virtualbox (linux/Mac)
-Hyper-V (Windows 10)
+Clone the backend and the frontend repository to the code folder:
 
-Build image from Dockerfile (this step is not necessary to be able to run the image).
-$ docker build -t local:version .
-$ docker tag local:version davivc/contentools:version
-$ docker tag davivc/contentools:version davivc/contentools:latest
-$ docker push davivc/contentools:version
-$ docker push davivc/contentools:latest
+```
+$ git clone git@gitlab.com:contentools/frontend.git code/frontend
+$ git clone git@gitlab.com:contentools/backend.git code/backend
+```
 
-# Run image with a working platform 
-$ docker run -dit davivc/contentools:latest /bin/bash
+Now you need to build the containers that run build related commands for each of the projects:
+```
+$ docker build -t contentools/frontend-container ./frontend-container
+$ docker build -t contentools/backend-container ./backend-container
+```
 
-# If you want to work only the backend in your host machine
-$ docker run -i -t -v /local/pah/to/backend:/root/contentools/backend davivc/contentools:version /bin/bash
+Use these containers to get that source code you just cloned and build them to be able to run the platform:
+```
+$ docker run --rm -v $(pwd)/code/frontend:/opt/frontend/ contentools/frontend-container make build
+$ docker run --rm -v $(pwd)/code/frontend:/opt/backend/ contentools/backend-container make build
+```
+*$(pwd) is used because docker do not accept relative directories. Use the absolute path instead $(pwd) in non-UNIX environments.*
 
-# If you want to work only the frontend in your host machine
-$ docker run -i -t -v /local/pah/to/frontent:/root/contentools/frontend davivc/contentools:version /bin/bash
-
-# If you want to work the backend and the frontend in your host machine
-# backend and frontend must be inside the same folder as follows:
-# content_platform_folder/
-#    - backend/
-#    - frontend/
-$ docker run -i -t -v /local/pah/to/content_platform_folder:/root/contentools davivc/contentools:version /bin/bash
-
-# Retrieve the list of running container
-$ docker ps
-$ docker ps -a (list all)
-
-# Shell of the running container
-$ docker exec -it container_id /bin/bash
+## Firing up the stack

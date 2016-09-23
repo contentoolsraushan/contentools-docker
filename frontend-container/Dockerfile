@@ -33,5 +33,5 @@ ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
 # Ensure that Python outputs everything that's printed inside
 # the application rather than buffering it.
-WORKDIR /opt/frontend
+WORKDIR /opt/frontend/
 CMD ["make", "watch"]
