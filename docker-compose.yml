@@ -18,6 +18,7 @@ services:
      - "5000:5000"
     volumes:
         - ./code/backend/:/opt/backend/
+        - ./code/backup/:/opt/backup/
     depends_on:
      - postgres
   postgres:
