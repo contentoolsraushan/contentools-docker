@@ -1,7 +1,8 @@
 version: '2'
 services:
   backend:
-    build: ./backend
+    build: ./backend-container
+    command: serve
     env_file:
      - env
     ports:
