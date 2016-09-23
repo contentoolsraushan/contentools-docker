@@ -43,5 +43,5 @@ ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 # the application rather than buffering it.
 ENV PYTHONUNBUFFERED 1
 COPY entrypoint.sh /backend-entrypoint.sh
-COPY build.sh /backend-build.sh
-CMD ["./backend-entrypoint.sh"]
+WORKDIR /opt/backend
+CMD ["/backend-entrypoint.sh"]
