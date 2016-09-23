@@ -1,4 +1,5 @@
-Virtualized environment to run the Contentools stack using docker and docker-compose. With this project, you don't need to install anything from our stack to have it running.
+Virtualized environment to run the Contentools stack using docker and docker-compose.
+With this project, you don't need to install anything from our stack to have it running.
 
 ## Pre-requisites
 
@@ -14,24 +15,49 @@ Clone the backend and the frontend repository to the code folder:
 
 ```
 $ git clone git@gitlab.com:contentools/frontend.git code/frontend
-$ git clone git@gitlab.com:contentools/backend.git code/backend
+$ git clone git@gitlab.com:contentools/backend.git  code/backend
 ```
 
 Now you need to build the containers that we will use:
 ```
-$ docker build -t contentools/frontend-container ./frontend-container
-$ docker build -t contentools/backend-container ./backend-container
 $ docker-compose build
 ```
 
-Use these containers to get that source code you just cloned and build them to be able to run the platform:
+Use these containers to get that source code you just
+cloned and build them to be able to run the platform:
 ```
-$ docker run --rm -v $(pwd)/code/frontend:/opt/frontend/ contentools/frontend-container build
-$ docker run --rm -v $(pwd)/code/frontend:/opt/backend/ contentools/backend-container build
+$ docker-compose run --rm frontend build
+$ docker-compose run --rm backend build
 ```
-*$(pwd) is used because docker do not accept relative directories. Use the absolute path instead $(pwd) in non-UNIX environments.*
+
+## Configurations & Database
+
+### Hosts
+
+You need to add two domains to your hosts file.
+This is very important: our application will deny connections from other domains.
+
+```
+127.0.0.1 go.contentools.dev
+127.0.0.1 contentools.contentools.dev
+```
+
+### Database
+
+*Confused about the hosts file? Check [this article](http://www.bleepingcomputer.com/tutorials/hosts-files-explained/)*
+
+It is recommended that you use a database backup to populate it before running the stack.
+Get the database backup files and put them under the `backup/` folder and then:
+
+```
+$ docker-compose run --rm backend restore
+```
 
 ## Firing up the stack
+
+```
+ docker-compose up
+```
 
 (todo)
 

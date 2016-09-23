@@ -1,5 +1,14 @@
 version: '2'
 services:
+  frontend:
+    build: ./frontend-container
+    command: watch
+    env_file:
+     - env
+    ports:
+     - "35729:35729"
+    volumes:
+        - ./code/frontend/:/opt/frontend/
   backend:
     build: ./backend-container
     command: serve
@@ -8,7 +17,7 @@ services:
     ports:
      - "5000:5000"
     volumes:
-        - ~/opt/backend:/opt/backend/
+        - ./code/backend/:/opt/backend/
     depends_on:
      - postgres
      - rabbitmq
@@ -20,10 +29,10 @@ services:
     image: nginx:1.10.0
     depends_on:
      - backend
+     - frontend
     ports:
      - "80:80"
     volumes:
-     - ~/opt/frontend/:/opt/frontend
      - ./nginx.conf:/etc/nginx/nginx.conf:ro
      - /etc/nginx/ssl/:/etc/nginx/ssl/
   rabbitmq:
