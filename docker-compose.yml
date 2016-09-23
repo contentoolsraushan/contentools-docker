@@ -1,14 +1,13 @@
 version: '2'
 services:
-  web:
-    build: .
+  backend:
+    build: ./backend
     env_file:
-    - env
+     - env
     ports:
      - "5000:5000"
     volumes:
-        #     - ./code/:/root/contentools/
-        - /opt/contentools/
+        - ~/opt/backend:/opt/backend/
     depends_on:
      - postgres
   postgres:
@@ -18,7 +17,7 @@ services:
   nginx:
     image: nginx:1.10.0
     depends_on:
-     - web
+     - backend
     ports:
      - "80:80"
     volumes:
